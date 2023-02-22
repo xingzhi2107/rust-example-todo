@@ -20,7 +20,7 @@ impl Todo {
         let todos = Todo::load_todos();
         if todos.len() > 0 {
             let content = Todo::todos_to_content(&todos);
-            println!(content);
+            println!("{}", content);
         } else {
             println!("There is no todos!");
         }
@@ -44,6 +44,18 @@ impl Todo {
 
     pub fn incomplete_todo(id: u32) {
         Todo::set_complete(id, true);
+    }
+
+    pub fn edit_todo(id: u32, title: &str) {
+        let mut todos = Todo::load_todos();
+
+        todos.iter_mut().for_each(|item| {
+            if item.id == id {
+                item.title = String::from(title)
+            }
+        });
+
+        Todo::save_todos(&todos);
     }
 
     pub fn remove_todo(id: u32) {
