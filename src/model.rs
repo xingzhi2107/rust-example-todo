@@ -122,7 +122,7 @@ impl TodoApp {
         });
     }
 
-    fn save_todos(&self) {
+    pub fn save_todos(&self) {
         let home_path = env::var("HOME").expect("home path is not set");
         let data_path = [home_path, ".todo".to_string()].join("/");
         let content = self.to_string();
