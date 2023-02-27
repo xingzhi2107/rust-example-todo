@@ -1,9 +1,6 @@
-extern crate core;
-
 use std::io::Write;
 
 mod model;
-mod command;
 
 fn main() {
     println!("Welcome to todo list! Use 'help' command to show help info!");
@@ -15,6 +12,6 @@ fn main() {
         std::io::stdin()
             .read_line(&mut input)
             .expect("Failed to read line!");
-        command::deal_input(&mut todo_app, &input);
+        model::TodoApp::deal_input(&mut todo_app, &input);
     }
 }

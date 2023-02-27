@@ -19,6 +19,52 @@ impl TodoApp {
         }
     }
 
+    pub fn deal_input(&mut self, input: &str) {
+        let args = input.trim().split(" ").collect::<Vec<&str>>();
+        let cmd: &str = args.get(0).expect("invalid input");
+        let task_id: u32;
+        let title: &str;
+        match args.len() {
+            1 => {
+                match cmd {
+                    "help" => TodoApp::help(),
+                    "list" => self.list_todos(),
+                    "save" => self.save_todos(),
+                    "quit" => std::process::exit(0),
+                    _ => panic!("invalid cmd"),
+                }
+            }
+            2 => {
+                match cmd {
+                    "add" => {
+                        title = args.get(1).expect("invalid input");
+                        self.add_todo(title)
+                    },
+                    _ => {
+                        task_id = args.get(1).expect("invalid task id")
+                            .parse::<u32>().expect("invalid task id");
+                        match cmd {
+                            "complete" => self.complete_todo(task_id),
+                            "incomplete" => self.incomplete_todo(task_id),
+                            "remove" => self.remove_todo(task_id),
+                            _ => panic!("invalid cmd")
+                        }
+                    }
+                }
+            }
+            _ => {
+                task_id = args.get(1).expect("invalid task id")
+                    .parse::<u32>().expect("invalid task id");
+                title = args.get(2).expect("invalid input");
+
+                match cmd {
+                    "edit" => self.edit_todo(task_id, &title),
+                    _ => panic!("invalid cmd"),
+                }
+            }
+        }
+    }
+
     pub fn load_todos() -> Vec<Todo> {
         let home_path = env::var("HOME").expect("home path is not set");
         let data_path = [home_path, ".todo".to_string()].join("/");
@@ -87,6 +133,21 @@ impl TodoApp {
         content.lines()
             .filter(|line| line.trim() != "")
             .map(|line| Todo::from_str(line)).collect()
+    }
+
+    pub fn help() {
+        println!("\
+Commands:
+    help        print this help text
+    list        list all task
+    add         add new task, example 'add new task title'
+    edit        edit exists task, example 'edit 1 new task title for 1'
+    complete    complete task
+    incomplete  incomplete task
+    remove      remove task
+    save        save modify
+    quit        quit
+        ")
     }
 }
 
